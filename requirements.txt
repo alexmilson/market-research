@@ -1,0 +1,5 @@
+streamlit
+langchain
+llama-index
+huggingface-hub
+accelerate
