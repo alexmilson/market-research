@@ -41,22 +41,28 @@ def generate_use_cases_with_hf(industry):
 
     return response.strip()  # Clean up any leading/trailing whitespace
 
-# Static function to return the same set of links every time
-def fetch_relevant_links():
-    links = """
-    ### General Kaggle Datasets
-    1. [Customer Analytics Dataset](https://www.kaggle.com/competitions/customer-analytics/data) - Useful for customer segmentation and churn prediction.
-    2. [Retail Analysis Dataset](https://www.kaggle.com/competitions/store-sales-time-series-forecasting/data) - Suitable for supply chain optimization or sales prediction.
-    3. [Manufacturing Quality Dataset](https://www.kaggle.com/datasets/uciml/quality-prediction-in-a-manufacturing-process) - Relevant for predictive maintenance or defect detection in manufacturing.
-    4. [Healthcare Cost Dataset](https://www.kaggle.com/datasets/mirichoi0218/insurance) - Ideal for healthcare cost predictions or patient analytics.
+# Function to fetch relevant links (datasets or resources)
+def fetch_relevant_links(company, industry):
+    query = f"{company} {industry} datasets site:kaggle.com OR site:github.com"
+    results = search.invoke(query)
+    
+    # Check if results are valid and format them
+    if results:
+        github_links = [result for result in results if 'github.com' in result]
+        kaggle_links = [result for result in results if 'kaggle.com' in result]
+        
+        formatted_results = []
+        if github_links:
+            formatted_results.append(f"**GitHub Links:**")
+            formatted_results.extend(github_links)
+        
+        if kaggle_links:
+            formatted_results.append(f"**Kaggle Links:**")
+            formatted_results.extend(kaggle_links)
 
-    ### General GitHub Repositories
-    1. [Supply Chain Data Repository](https://github.com/dsindy/supply-chain-optimization) - Algorithms and datasets for supply chain analysis.
-    2. [AI Chatbots Repository](https://github.com/microsoft/BotBuilder) - Frameworks and examples for building AI-driven chatbots.
-    3. [Document AI Repository](https://github.com/google-research-datasets/document-ai) - Resources for implementing AI-powered document management systems.
-    4. [Predictive Maintenance Dataset and Tools](https://github.com/IBM/predictive-maintenance) - Solutions and datasets for industrial predictive maintenance.
-    """
-    return links
+        return "\n".join(formatted_results) if formatted_results else "No relevant datasets or resources found."
+    else:
+        return "No relevant datasets or resources found."
 
 # Streamlit Workflow
 if st.button("Generate") and company:
@@ -74,8 +80,8 @@ if st.button("Generate") and company:
             
             # Step 3: Dataset and Resource Links
             st.subheader("Relevant Datasets and Resources")
-            links = fetch_relevant_links()  # Fetch static links
-            st.markdown(links)  # Display the links in markdown
+            links = fetch_relevant_links(company, industry_info)
+            st.write(links)
             
             st.success("Data Generated Successfully!")
         except Exception as e:
