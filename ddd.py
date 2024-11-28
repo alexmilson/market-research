@@ -7,7 +7,7 @@ search = DuckDuckGoSearchRun()
 client = InferenceClient(api_key="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")
 
 # Streamlit App
-st.title("AI Use Case Generator with Hugging Face LLM")
+st.title("AI Use Case Generator ")
 
 # Input field for company name
 company = st.text_input("Enter the Company Name:")
@@ -46,9 +46,21 @@ def fetch_relevant_links(company, industry):
     query = f"{company} {industry} datasets site:kaggle.com OR site:github.com"
     results = search.invoke(query)
     
-    # Check if results are valid
+    # Check if results are valid and format them
     if results:
-        return results
+        github_links = [result for result in results if 'github.com' in result]
+        kaggle_links = [result for result in results if 'kaggle.com' in result]
+        
+        formatted_results = []
+        if github_links:
+            formatted_results.append(f"**GitHub Links:**")
+            formatted_results.extend(github_links)
+        
+        if kaggle_links:
+            formatted_results.append(f"**Kaggle Links:**")
+            formatted_results.extend(kaggle_links)
+
+        return "\n".join(formatted_results) if formatted_results else "No relevant datasets or resources found."
     else:
         return "No relevant datasets or resources found."
 
