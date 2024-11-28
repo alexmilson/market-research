@@ -45,7 +45,24 @@ def generate_use_cases_with_hf(industry):
 def fetch_relevant_links(company, industry):
     query = f"{company} {industry} datasets site:kaggle.com OR site:github.com"
     results = search.invoke(query)
-    return results
+    
+    # Check if results are valid and format them
+    if results:
+        github_links = [result for result in results if 'github.com' in result]
+        kaggle_links = [result for result in results if 'kaggle.com' in result]
+        
+        formatted_results = []
+        if github_links:
+            formatted_results.append(f"**GitHub Links:**")
+            formatted_results.extend(github_links)
+        
+        if kaggle_links:
+            formatted_results.append(f"**Kaggle Links:**")
+            formatted_results.extend(kaggle_links)
+
+        return "\n".join(formatted_results) if formatted_results else "No relevant datasets or resources found."
+    else:
+        return "No relevant datasets or resources found."
 
 # Streamlit Workflow
 if st.button("Generate") and company:
