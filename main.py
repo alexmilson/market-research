@@ -6,10 +6,6 @@ from huggingface_hub import InferenceClient
 search = DuckDuckGoSearchRun()
 client = InferenceClient(api_key="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")
 
-# Dictionary to store indexed research and use cases
-research_index = {}
-use_case_index = {}
-
 # Streamlit App
 st.title("AI Use Case Generator with Hugging Face LLM")
 
@@ -18,15 +14,12 @@ company = st.text_input("Enter the Company Name:")
 
 # Function to infer industry based on company name
 def infer_industry(company):
-    # Use a search engine to infer the industry based on the company name
     query = f"{company} industry"
     results = search.invoke(query)
-    research_index["industry_info"] = results  # Storing industry info
     return results
 
 # Function to generate AI/ML use cases based on the industry
 def generate_use_cases_with_hf(industry):
-    # Preparing input for the LLM
     messages = [
         {
             "role": "user",
@@ -45,14 +38,11 @@ def generate_use_cases_with_hf(industry):
         for chunk in stream:
             delta = chunk.choices[0].delta.content
             response += delta
-            st.write(delta, end="")
 
-    use_case_index["use_cases"] = response  # Store the use case response in the dictionary
-    return response
+    return response.strip()  # Clean up any leading/trailing whitespace
 
 # Function to fetch relevant links (datasets or resources)
 def fetch_relevant_links(company, industry):
-    # Fetch links to relevant resources like Kaggle, GitHub, etc.
     query = f"{company} {industry} datasets site:kaggle.com OR site:github.com"
     results = search.invoke(query)
     return results
@@ -79,4 +69,3 @@ if st.button("Generate") and company:
             st.success("Data Generated Successfully!")
         except Exception as e:
             st.error(f"An error occurred: {e}")
-
