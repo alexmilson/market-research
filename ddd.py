@@ -41,10 +41,9 @@ def generate_use_cases_with_hf(industry):
 
     return response.strip()  # Clean up any leading/trailing whitespace
 
-# Updated Function: Fetch relevant links (datasets or resources)
-def fetch_relevant_links(company, industry):
-    # Static fallback links for general Kaggle datasets and GitHub repositories
-    fallback_links = """
+# Static function to return the same set of links every time
+def fetch_relevant_links():
+    links = """
     ### General Kaggle Datasets
     1. [Customer Analytics Dataset](https://www.kaggle.com/competitions/customer-analytics/data) - Useful for customer segmentation and churn prediction.
     2. [Retail Analysis Dataset](https://www.kaggle.com/competitions/store-sales-time-series-forecasting/data) - Suitable for supply chain optimization or sales prediction.
@@ -57,21 +56,7 @@ def fetch_relevant_links(company, industry):
     3. [Document AI Repository](https://github.com/google-research-datasets/document-ai) - Resources for implementing AI-powered document management systems.
     4. [Predictive Maintenance Dataset and Tools](https://github.com/IBM/predictive-maintenance) - Solutions and datasets for industrial predictive maintenance.
     """
-
-    # Query to fetch dynamic links
-    query = f"{company} {industry} datasets site:kaggle.com OR site:github.com"
-    results = search.invoke(query)
-
-    # If dynamic results exist, append them to the static fallback links
-    if results:
-        formatted_results = []
-        for result in results:
-            formatted_results.append(f"- [{result['title']}]({result['link']})")
-        dynamic_links = "\n".join(formatted_results)
-        return fallback_links + "\n\n### Dynamic Results\n" + dynamic_links
-    else:
-        # If no dynamic results are found, return the fallback links only
-        return fallback_links
+    return links
 
 # Streamlit Workflow
 if st.button("Generate") and company:
@@ -89,8 +74,8 @@ if st.button("Generate") and company:
             
             # Step 3: Dataset and Resource Links
             st.subheader("Relevant Datasets and Resources")
-            links = fetch_relevant_links(company, industry_info)
-            st.markdown(links, unsafe_allow_html=True)
+            links = fetch_relevant_links()  # Fetch static links
+            st.markdown(links)  # Display the links in markdown
             
             st.success("Data Generated Successfully!")
         except Exception as e:
