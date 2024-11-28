@@ -13,10 +13,10 @@ use_case_index = {}
 # Streamlit App
 st.title("AI Use Case Generator with Hugging Face LLM")
 
-# Input field for company name (industry inferred)
+# Input field for company name
 company = st.text_input("Enter the Company Name:")
 
-# Agent Workflow
+# Function to infer industry based on company name
 def infer_industry(company):
     # Use a search engine to infer the industry based on the company name
     query = f"{company} industry"
@@ -24,6 +24,7 @@ def infer_industry(company):
     research_index["industry_info"] = results  # Storing industry info
     return results
 
+# Function to generate AI/ML use cases based on the industry
 def generate_use_cases_with_hf(industry):
     # Preparing input for the LLM
     messages = [
@@ -49,25 +50,15 @@ def generate_use_cases_with_hf(industry):
     use_case_index["use_cases"] = response  # Store the use case response in the dictionary
     return response
 
+# Function to fetch relevant links (datasets or resources)
 def fetch_relevant_links(company, industry):
     # Fetch links to relevant resources like Kaggle, GitHub, etc.
     query = f"{company} {industry} datasets site:kaggle.com OR site:github.com"
     results = search.invoke(query)
     return results
 
-def format_search_results(raw_results):
-    # Process raw search results for better formatting
-    if not raw_results:
-        return "No relevant information found for your query."
-    
-    formatted_output = f"""
-    ## Search Results for Query:
-    **Top Findings**: {raw_results}
-    """
-    return formatted_output
-
 # Streamlit Workflow
-if st.button("Generate"):
+if st.button("Generate") and company:
     with st.spinner("Processing..."):
         try:
             # Step 1: Industry Insights
@@ -85,20 +76,7 @@ if st.button("Generate"):
             links = fetch_relevant_links(company, industry_info)
             st.write(links)
             
-            st.success("Data Indexed Successfully!")
+            st.success("Data Generated Successfully!")
         except Exception as e:
             st.error(f"An error occurred: {e}")
 
-# Search functionality for indexed data
-st.subheader("Search Indexed Data")
-index_type = st.radio("Select Index to Search:", ("Research", "Use Cases"))
-search_query = st.text_input("Enter your search query:")
-if st.button("Search Index"):
-    with st.spinner("Searching..."):
-        try:
-            # Select the correct index based on user selection
-            index = research_index if index_type == "Research" else use_case_index
-            search_results = format_search_results(index.get(search_query, ""))
-            st.markdown(search_results, unsafe_allow_html=True)
-        except Exception as e:
-            st.error(f"An error occurred: {e}")
