@@ -44,13 +44,13 @@ def generate_use_cases_with_hf(industry):
 # Static function to return the same set of links every time
 def fetch_relevant_links():
     links = """
-    ### General Kaggle Datasets
+    ### Kaggle Links
     1. [Customer Analytics Dataset](https://www.kaggle.com/competitions/customer-analytics/data) - Useful for customer segmentation and churn prediction.
     2. [Retail Analysis Dataset](https://www.kaggle.com/competitions/store-sales-time-series-forecasting/data) - Suitable for supply chain optimization or sales prediction.
     3. [Manufacturing Quality Dataset](https://www.kaggle.com/datasets/uciml/quality-prediction-in-a-manufacturing-process) - Relevant for predictive maintenance or defect detection in manufacturing.
     4. [Healthcare Cost Dataset](https://www.kaggle.com/datasets/mirichoi0218/insurance) - Ideal for healthcare cost predictions or patient analytics.
 
-    ### General GitHub Repositories
+    ### GitHub Links
     1. [Supply Chain Data Repository](https://github.com/dsindy/supply-chain-optimization) - Algorithms and datasets for supply chain analysis.
     2. [AI Chatbots Repository](https://github.com/microsoft/BotBuilder) - Frameworks and examples for building AI-driven chatbots.
     3. [Document AI Repository](https://github.com/google-research-datasets/document-ai) - Resources for implementing AI-powered document management systems.
