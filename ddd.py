@@ -86,10 +86,3 @@ if st.button("Generate") and company:
 
 
 
-
-
-
-
-
-
-
